@@ -1,6 +1,6 @@
 from pathlib import Path
 import shutil
-
+from my_tool.utils import obtenir_extension
 
 # Cette fonction cherche et catégorise les fichiers
 def organiser_dossier(chemin_dossier):
@@ -35,7 +35,7 @@ def organiser_dossier(chemin_dossier):
             print("Fichier trouvé :", fichier)
 
             # Récupère l'extension du fichier
-            extension = fichier.suffix
+            extension = obtenir_extension(fichier)
             print("Extension :", extension)
 
             # Indique si une catégorie a été trouvée
@@ -84,20 +84,32 @@ def deplacer_fichier(fichier, dossier_categorie):
 
     # Vérifie si un fichier du même nom existe déjà
     if destination.exists():
-        print("⚠️ Le fichier existe déjà :", destination)
-        return
+
+        print(f"⚠️ Le fichier '{fichier.name}' existe déjà.")
+        reponse = input("Voulez-vous le remplacer ? (oui/annuler) : ")
+
+        # Vérifie la réponse de l'utilisateur
+        if reponse.strip().lower() != "oui":
+            print("❌ Remplacement annulé.")
+            return
 
     try:
-        # Essaie de déplacer le fichier
+        # Déplace le fichier vers sa destination
         shutil.move(fichier, destination)
 
         print("✅ Fichier déplacé vers :", destination)
 
     except Exception as erreur:
-        # Affiche l'erreur sans arrêter tout le programme
+        # Affiche l'erreur rencontrée
         print("❌ Erreur lors du déplacement :", erreur)
 
 
 # Appel de la fonction
 # print(Path.cwd()) permet de connaître le dossier de travail actuel
-organiser_dossier("../A_trier")
+
+# Execute le programme uniquement si ce fichier est lancé directement
+
+if __name__ == "__main__":
+        organiser_dossier("../A_trier")
+
+# __name__ est une variable spéciale de python
